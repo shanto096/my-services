@@ -12,6 +12,7 @@ import Product from './component/Product.jsx';
 import Login from './component/Login.jsx';
 import Register from './component/Register.jsx';
 import ContextProvider from './component/ContextProvider';
+import PrivateComponent from './component/PrivateComponent';
 
 
 const router = createBrowserRouter([
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/product",
-        element: <Product></Product>,
+        element: <PrivateComponent><Product></Product></PrivateComponent>,
       },
       {
         path: "/about",

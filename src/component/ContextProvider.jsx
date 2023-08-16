@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createContext } from 'react';
 
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { app } from '../firebase.config';
+
+
 
 
  const auth = getAuth(app);
 export const Context = createContext(null)
-
 const ContextProvider =  ({ children }) => {
-   
 
-    const name ={name:'shanto'}
+    const [user, setUser ]= useState('')
+    const [data, setData ]= useState('')
+
 
   //  register create 
     const createRegister = (email, password) =>{
@@ -29,14 +31,31 @@ const ContextProvider =  ({ children }) => {
     return signOut(auth)
    }
 
+   useEffect(()=>{
+    const unSubscribe = onAuthStateChanged(auth, (loggedInUser) => {
+      setUser(loggedInUser)
+    });
+    return ()=>{
+        unSubscribe()
+    }
+
+   },[]);
+
+   useEffect(()=>{
+    fetch("http://localhost:5000/services")
+    .then((res) => res.json())
+    .then((data) => setData(data))
+   })
+
   
     const value = {
     //   state,
     //   setState,
-    name,
+    user,
     createRegister,
     login,
-    createLogOut
+    createLogOut,
+    data
     }
     
     return <Context.Provider value={value}>{children}</Context.Provider>

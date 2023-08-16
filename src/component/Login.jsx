@@ -1,12 +1,35 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Context } from './ContextProvider';
 
 const Login = () =>  {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const navigate = useNavigate()
+
+    const {user,login} = useContext(Context)
   
     const handleLogin = (e) => {
       e.preventDefault();
+      if (user) {
+        login(email,password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        navigate('/')
+
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+      }
+      else{
+        navigate('/register')
+      }
+      
+    
+
       // Add your login logic here
     };
 

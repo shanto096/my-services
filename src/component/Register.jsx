@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Context } from './ContextProvider';
 
 const Register = () => {
@@ -7,22 +7,44 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    const navigate = useNavigate()
   
 
     const {createRegister} = useContext(Context)
-
   
     const handleRegister = (e) => {
         e.preventDefault();
         e.target.reset();
+        if (!/(?=.*[a-z])/.test(password)){
+
+          alert(' the password must contain one lowercase letter')
+          return;
+       }
+       else if (!/(?=.*[A-Z])/.test(password)) {
+           alert('the password must contain one uppercase letter')
+           return;
+       }
+       else if (password.length < 10) {
+           alert(' the password must be 10 characters long')
+           return;
+       }
+      if (password === confirmPassword) {
       createRegister(email,password)
-      .then(res =>{
+        .then(res =>{
         const createUser = res.user;
         console.log(createUser);
+        navigate('/')
+        
       })
       .catch(error =>{
         console.log(error);
       })
+      }
+      else{
+        alert('No')
+      }
+      
 
      
    
@@ -42,7 +64,7 @@ const Register = () => {
                   className="w-full px-3 py-2 rounded-md border focus:ring focus:ring-blue-300"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                />
+                 required/>
               </div>
              
             <div className="mb-4">
@@ -52,7 +74,7 @@ const Register = () => {
                 className="w-full px-3 py-2 rounded-md border focus:ring focus:ring-blue-300"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-              />
+                required/>
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-600">Password</label>
@@ -61,7 +83,7 @@ const Register = () => {
                 className="w-full px-3 py-2 rounded-md border focus:ring focus:ring-blue-300"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-              />
+                required/>
             </div>
             <div className='mb-4'>
                 <label className="block text-sm font-medium text-gray-600">Confirm Password</label>
@@ -70,7 +92,7 @@ const Register = () => {
                   className="w-full px-3 py-2 rounded-md border focus:ring focus:ring-blue-300"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                />
+                  required/>
               </div>
             <button
               type="submit"
